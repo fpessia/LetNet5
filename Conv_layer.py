@@ -54,8 +54,8 @@ class Conv_layer():
             for k in range(self.input_size):
                 for l in range(self.input_size):
                     for f in range(self.number_of_filters):
-                        for i in range(self.filter_size):
-                            for j in range(self.filter_size):
+                        for i in range(self.output_size):
+                            for j in range(self.output_size):
                                 u = k - i
                                 v = l - j
                                 if u >= 0 and v >= 0 :

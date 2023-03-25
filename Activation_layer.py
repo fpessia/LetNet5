@@ -8,8 +8,9 @@ class Activation_layer():
     
     def forward(self,x):
         self.x = x
-        self.y = torch.tanh(x)
-        return self.y
+        self.x = self.x.requires_grad = True
+        self.y = torch.tanh(self.x)
+        return torch.tanh(x)
 
     def backward(self,dl_dy):
         self.y.backward(dl_dy)

@@ -11,10 +11,12 @@ import sys
 x = torch.zeros(2,2, requires_grad = True)
 print(x)
 x = torch.tensor([[0.9, -0.67],[0.7, 0.4]], requires_grad = True)
+x = torch.tensor([[0.9, -0.67],[0.7, 0.4]])
+x.requires_grad = True
 print(x)
 y = torch.tanh(x)
 print(y)
-dy = torch.tensor([[0.01, 0.0001],[ 0.1, 1.0]])
+dy = torch.tensor([[0.0, 1],[ 0.0, 0.0]])
 y.backward(dy)
 print(x.grad)
 

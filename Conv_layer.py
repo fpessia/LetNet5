@@ -25,7 +25,7 @@ class Conv_layer():
         self.last_input = x
         return y
     
-    def back_prop(self,dy):
+    def backward(self,dy):
         # As a fisrt step I calculate db, dw, dx
         #then I update w & b
         db = torch.zeros(1,self.number_of_filters)

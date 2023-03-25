@@ -25,5 +25,17 @@ class Avg_Pooling_layer():
 
                     y[c][k][l] = y[c][k][l] / (self.pooling_size * self.pooling_size)
         return y
+    
+    def backward(self,dy):
+        dx = torch.zeros(self.n_channel,self.input_size,self.input_size)
+        for c in range(self.n_channel):
+            for k in range(self.output_size):
+                for l in range(self.output_size):
+                    for i in range(self.pooling_size):
+                        for j in range(self.pooling_size):
+                            dx[c][k*self.pooling_size + i][l *self.pooling_size + j] = dy[c][k][l] / (self.pooling_size * self.pooling_size)
+        return dx
+    
+
 
 

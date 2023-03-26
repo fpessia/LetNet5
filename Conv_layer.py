@@ -21,7 +21,7 @@ class Conv_layer():
                             for k in range(self.filter_size):
                                 for l in range(self.filter_size):
                                     y[f][i][j] += self.w[f][c][k][l] * x[c][i+k][j+l]
-                        y[f][i][j] += self.b[1][f]
+                        y[f][i][j] += self.b[0][f]
         self.last_input = x
         return y
     
@@ -36,7 +36,7 @@ class Conv_layer():
         for f in range(self.number_of_filters):
             for i in range(self.output_size):
                 for j in range(self.output_size):
-                    db[1,f] += dy[f][i][j]
+                    db[0,f] += dy[f][i][j]
        
         #Now i proced to find dw
         for f in range(self.number_of_filters):
@@ -68,7 +68,7 @@ class Conv_layer():
        
         #Now I update w & b according to learinig rate
         for f in range(self.number_of_filters):
-            self.b[1][f] -= self.learning_rate * db[1][f]
+            self.b[0][f] -= self.learning_rate * db[0][f]
         
         for f in range(self.number_of_filters):
             for c in range(self.n_channels):

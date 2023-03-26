@@ -3,11 +3,34 @@ import numpy as np
 import sys
 import torchvision
 import torchvision.transforms as transforms
-
+import torch.nn as nn
 
 #x = torch.tensor([[2.0,2.0],[2.0,2.0],[2.0,2.0]],requires_grad=True)
 #print(x1.size())
 
+
+x = torch.tensor([0.9, 0.01, 0.01, 0.1])
+print(len(x))
+print(x[1])
+print(x[1].item())
+print(torch.argmax(x).item())
+# sofmax
+output = torch.softmax(x, dim=0)
+print(output)
+sm = nn.Softmax(dim=0)
+output = sm(x)
+print(output)
+
+
+sys.exit()
+x = torch.zeros(1,20)
+print(x[0][5])
+
+for i in range(2, 30):
+    print(i)
+
+
+sys.exit()
 batch_size = 50
 
 train_dataset = torchvision.datasets.MNIST(root='./data', 
@@ -20,12 +43,18 @@ train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                            shuffle=True)
 
 
+
+
 for i, (immages,label) in enumerate(train_loader):
-    print(immages.size())
+   # print(immages.size())
+    immages_padded_0 = torch.zeros(1,32,32)
+    imm= immages[2]
+    immages_padded_0[0][0 : 28][0 : 29] = imm[0][:][:]
+    print(immages_padded_0)
   #  print(immages)
     
-    print(label)
-    print(label.size())
+    #print(label)
+    #print(label.size())
 sys.exit()
 #x = torch.randn(3, requires_grad = True)
 x = torch.zeros(2,2, requires_grad = True)

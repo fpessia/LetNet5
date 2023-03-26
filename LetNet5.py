@@ -1,3 +1,4 @@
+import torch
 from Conv_layer import Conv_layer
 from Activation_layer import Activation_layer
 from Avg_Pooling_layer import Avg_Pooling_layer

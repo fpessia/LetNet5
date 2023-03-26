@@ -15,7 +15,7 @@ class Fully_connected_layer():
             for w_i in range(self.input_size):
                 y[n] += self.w[n][w_i] * x[w_i]
 
-            y[n] += self.b[1,n]
+            y[n] += self.b[0,n]
         self.last_input = x
         return y
     
@@ -31,7 +31,7 @@ class Fully_connected_layer():
         
         #then db
         for n in range(self.output_size):
-            db[1][n] = dy[n]
+            db[0][n] = dy[n]
 
         #and to conclude dx
         for i in range(self.input_size):

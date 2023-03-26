@@ -1,14 +1,32 @@
 import torch
 import numpy as np
 import sys
+import torchvision
+import torchvision.transforms as transforms
 
 
 #x = torch.tensor([[2.0,2.0],[2.0,2.0],[2.0,2.0]],requires_grad=True)
 #print(x1.size())
 
+batch_size = 50
+
+train_dataset = torchvision.datasets.MNIST(root='./data', 
+                                           train=True, 
+                                           transform=transforms.ToTensor(),  
+                                           download=True)
+
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
+                                           batch_size=batch_size, 
+                                           shuffle=True)
 
 
-
+for i, (immages,label) in enumerate(train_loader):
+    print(immages.size())
+  #  print(immages)
+    
+    print(label)
+    print(label.size())
+sys.exit()
 #x = torch.randn(3, requires_grad = True)
 x = torch.zeros(2,2, requires_grad = True)
 print(x)

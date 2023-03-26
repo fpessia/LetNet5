@@ -19,21 +19,31 @@ class LetNet5():
         self.Fully2 = Fully_connected_layer(84,10,learning_rate)
 
     def forward(self,x):
-        l1 = self.C1(x)
-        l2 = self.Act_C1(l1)
-        l3 = self.Avg_polling_1(l2)
-        l4 = self.C2(l3)
-        l5 = self.Act_C2(l4)
-        l6 = self.Avg_pooling2(l5)
-        l7 = self.C3(l6)
-        l8 = self.Act_C3(l7)
-        l9 = self.Fully1(l8)
-        l10 = self.Act_Fully1(l9)
-        l11 = self.Fully2(l10)
+        l1 = self.C1.forward(x)
+        l2 = self.Act_C1.forward(l1)
+        l3 = self.Avg_polling_1.forward(l2)
+        l4 = self.C2.forward(l3)
+        l5 = self.Act_C2.forward(l4)
+        l6 = self.Avg_pooling2.forward(l5)
+        l7 = self.C3.forward(l6)
+        l8 = self.Act_C3.forward(l7)
+        l9 = self.Fully1.forward(l8)
+        l10 = self.Act_Fully1.forward(l9)
+        l11 = self.Fully2.forward(l10)
         return l11
     
     def backward(self,loss):
-        
+        b0 = self.Fully2.backward(loss)
+        b1 = self.Act_Fully1.backward(b0)
+        b2 = self.Fully1.backward(b1)
+        b3 = self.Act_C3.backward(b2)
+        b4 = self.C3.backward(b3)
+        b5 = self.Avg_pooling2.backward(b4)
+        b6 = self.Act_C2.backward(b5)
+        b7 = self.C2.backward(b6)
+        b8 = self.Avg_polling_1.backward(b7)
+        b9 = self.Act_C1.backward(b8)
+        b10 = self.C1.backward(b9)
 
 
     

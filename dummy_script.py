@@ -7,6 +7,8 @@ import sys
 #print(x1.size())
 
 
+
+
 #x = torch.randn(3, requires_grad = True)
 x = torch.zeros(2,2, requires_grad = True)
 print(x)
@@ -49,3 +51,12 @@ sys.exit()
        # for i in range(self.filter_size):
         #    for j in range(self.filter_size):
          #       w_transposed[:,:,i,j] = self.w[:,:,self.filter_size-i-1,self.filter_size-j-1]
+
+
+ #         for n in range(self.output_size):
+ #          for i in range(self.input_size):
+ #               w_t[i][n] = self.w[n][i]
+
+  #      for i in range(self.input_size):
+   #         for n in range(self.output_size):
+    #            dx[i] += w_t[i][n] * dy[n]

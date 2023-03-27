@@ -18,10 +18,11 @@ def padding(input_tensor):
 
 def loss_calculation(y_tilde, y):
     N = len(y_tilde)
-    dl_dy = torch.zeros(1,N)
+    dl_dy = torch.zeros(N)
     for i in range(N):
-        dl_dy[i] = (2/N)*(y_tilde[i]-y)
+        dl_dy[i] = (2/N)*(y_tilde[i]-y[i])
     return dl_dy
+
 def loss (y_tilde,y):
     return ((y_tilde - y)**2).mean()
     
@@ -66,7 +67,7 @@ for epoch in range(n_epochs):
             y_softma = torch.softmax(output, dim=0)
             y_softmax = y_softma.clone().detach().requires_grad_(True)
             
-            real_label = torch.zeros(1,10)
+            real_label = torch.zeros(10)
             real_label[label[b].item()] = 1.0
             dL_dy = loss_calculation(y_softmax,real_label)
 

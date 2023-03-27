@@ -55,8 +55,6 @@ class LetNet5():
         b10 = self.C1.backward(b9)
 
 
-    
-
 
 
 

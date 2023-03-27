@@ -7,15 +7,15 @@ class Fully_connected_layer():
         self.learning_rate = learning_rate
         self.w = torch.randn(self.output_size,self.input_size)
         self.b = torch.randn(1,self.output_size)
-        self.last_input = torch.zeros(1,input_size)
+        self.last_input = torch.zeros(input_size)
 
     def forward(self, x):
-        y = torch.zeros(1, self.output_size)
+        y = torch.zeros(self.output_size)
         for n in range(self.output_size): #for each neuron
             for w_i in range(self.input_size):
                 y[n] += self.w[n][w_i] * x[w_i]
 
-            y[n] += self.b[0,n]
+            y[n] += self.b[0][n]
         self.last_input = x
         return y
     
@@ -41,7 +41,7 @@ class Fully_connected_layer():
         #Now I update weigth and biases
 
         for n in range(self.output_size):
-            self.b[n] -= self.learning_rate * db[n]
+            self.b[0][n] -= self.learning_rate * db[0][n]
             for i in range(self.input_size):
                 self.w[n][i] -= self.learning_rate * dw[n][i]
 

@@ -3,6 +3,13 @@ from Conv_layer import Conv_layer
 from Activation_layer import Activation_layer
 from Avg_Pooling_layer import Avg_Pooling_layer
 from Fully_connected_layer import Fully_connected_layer
+import sys
+
+def reshape(l_to_reshape):
+    output = torch.zeros(120)
+    for i in range(120):
+        output[i] = l_to_reshape[i][0][0]
+    return output
 
 
 class LetNet5(): 
@@ -21,16 +28,14 @@ class LetNet5():
 
     def forward(self,x):
         l1 = self.C1.forward(x)
-        
         l2 = self.Act_C1.forward(l1)
         l3 = self.Avg_polling_1.forward(l2)
         l4 = self.C2.forward(l3)
-       
         l5 = self.Act_C2.forward(l4)
         l6 = self.Avg_pooling2.forward(l5)
         l7 = self.C3.forward(l6)
-        
-        l8 = self.Act_C3.forward(l7)
+        l_to_reshape = self.Act_C3.forward(l7)
+        l8 = reshape(l_to_reshape)
         l9 = self.Fully1.forward(l8)
         l10 = self.Act_Fully1.forward(l9)
         l11 = self.Fully2.forward(l10)

@@ -11,6 +11,12 @@ def reshape(l_to_reshape):
         output[i] = l_to_reshape[i][0][0]
     return output
 
+def back_reshape(to_reshape_tensor):
+    tensor = torch.zeros(120,1,1)
+    for i in range(120):
+        tensor[i][0][0] = to_reshape_tensor[i]        
+    return tensor
+
 
 class LetNet5(): 
     def __init__(self,learning_rate): #although layers are parametically described, LetNet5 structure is fixed
@@ -44,7 +50,8 @@ class LetNet5():
     def backward(self,loss):
         b0 = self.Fully2.backward(loss)
         b1 = self.Act_Fully1.backward(b0)
-        b2 = self.Fully1.backward(b1)
+        btoshape = self.Fully1.backward(b1)
+        b2 = back_reshape(btoshape)
         b3 = self.Act_C3.backward(b2)
         b4 = self.C3.backward(b3)
         b5 = self.Avg_pooling2.backward(b4)
@@ -53,6 +60,10 @@ class LetNet5():
         b8 = self.Avg_polling_1.backward(b7)
         b9 = self.Act_C1.backward(b8)
         b10 = self.C1.backward(b9)
+
+
+    
+    
 
 
 

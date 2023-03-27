@@ -16,7 +16,7 @@ class Activation_layer():
         self.y.backward(dl_dy)
         output = self.x.grad
         self.x.grad.zero_()
-        self.y.grad.zero_()
+       # self.y.grad.zero_()
         return output
 
         

@@ -17,6 +17,9 @@ x1 = x.clone().detach().requires_grad_(True)
 print(x1)
 y = torch.tanh(x1)
 print(y)
+l = torch.tensor([0.1, 0.1, 0.1, 0.1])
+y.backward(l)
+print(x1.grad)
 sys.exit()
 
 

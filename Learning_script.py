@@ -64,24 +64,27 @@ for epoch in range(n_epochs):
             outpu = CNN.forward(immage_padded_0)
 
             output= outpu.clone().detach().requires_grad_ (True)
-            y_softma = torch.softmax(output, dim=0)
-            y_softmax = y_softma.clone().detach().requires_grad_(True)
+            y_softmax = torch.softmax(output, dim=0)
+          
             
             real_label = torch.zeros(10)
             real_label[label[b].item()] = 1.0
             dL_dy = loss_calculation(y_softmax,real_label)
 
+            
             y_softmax.backward(dL_dy)
+
+    
             CNN.backward(output.grad)
 
-            y_softmax.grad.zero_()
+            #y_softmax.grad.zero_()
             output.grad.zero_()
     if epoch % 1 == 0:
         l = loss(y_softmax,real_label)
         print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
 
 #Now I calculate model accuracy:
-with torch.nograd():
+with torch.no_grad():
     n_correct = 0
     n_samples = 0
     for images, labels in test_loader:

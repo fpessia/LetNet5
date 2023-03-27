@@ -21,29 +21,30 @@ class Fully_connected_layer():
     
     def backward(self, dy):
 
-        dw = torch.zeros(self.output_size,self.input_size)
-        db = torch.zeros(1,self.output_size)
-        dx = torch.zeros(self.input_size)
+        with torch.no_grad(): #dy is coming from softmax in outmost layer might cause gradient over calculation
+            dw = torch.zeros(self.output_size,self.input_size)
+            db = torch.zeros(1,self.output_size)
+            dx = torch.zeros(self.input_size)
         #I calculate first dw
-        for n in range(self.output_size):
-            for i in range(self.input_size):
-                dw[n][i] = dy[n] * self.last_input[i]
+            for n in range(self.output_size):
+                for i in range(self.input_size):
+                    dw[n][i] = dy[n] * self.last_input[i]
         
         #then db
-        for n in range(self.output_size):
-            db[0][n] = dy[n]
+            for n in range(self.output_size):
+                db[0][n] = dy[n]
 
         #and to conclude dx
-        for i in range(self.input_size):
-            for n in range(self.output_size):
-                dx[i] += dy[n] * self.w[n][i]
+            for i in range(self.input_size):
+                for n in range(self.output_size):
+                    dx[i] += dy[n] * self.w[n][i]
         
         #Now I update weigth and biases
 
-        for n in range(self.output_size):
-            self.b[0][n] -= self.learning_rate * db[0][n]
-            for i in range(self.input_size):
-                self.w[n][i] -= self.learning_rate * dw[n][i]
+            for n in range(self.output_size):
+                self.b[0][n] -= self.learning_rate * db[0][n]
+                for i in range(self.input_size):
+                    self.w[n][i] -= self.learning_rate * dw[n][i]
 
         return dx
         

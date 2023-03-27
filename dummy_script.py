@@ -9,11 +9,18 @@ import torch.nn as nn
 #print(x1.size())
 
 
-x = torch.tensor([0.9, 0.01, 0.01, 0.1])
-print(len(x))
-print(x[1])
-print(x[1].item())
-print(torch.argmax(x).item())
+
+
+x = torch.tensor([100, 0.00, 0.00, 0.0])
+#x1 = torch.tensor(x, requires_grad = True)
+x1 = x.clone().detach().requires_grad_(True)
+print(x1)
+y = torch.tanh(x1)
+print(y)
+sys.exit()
+
+
+#print(torch.argmax(x).item())
 # sofmax
 output = torch.softmax(x, dim=0)
 print(output)

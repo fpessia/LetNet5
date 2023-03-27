@@ -22,6 +22,8 @@ def loss_calculation(y_tilde, y):
     for i in range(N):
         dl_dy[i] = (2/N)*(y_tilde[i]-y)
     return dl_dy
+def loss (y_tilde,y):
+    return ((y_tilde - y)**2).mean()
     
 
 batch_size = 100
@@ -56,13 +58,13 @@ CNN = LetNet5(learning_rate)
 for epoch in range(n_epochs):
     for i, (immage, label) in enumerate(train_loader):
         for b in range(batch_size):
-
+            print(b)
             immage_padded_0 = padding(immage[b])
-            output = CNN.forward(immage_padded_0)
+            outpu = CNN.forward(immage_padded_0)
 
-            output.requires_grad = True
-            y_softmax = torch.softmax(output, dim=0)
-            y_softmax.requires_grad = True
+            output= outpu.clone().detach().requires_grad_ (True)
+            y_softma = torch.softmax(output, dim=0)
+            y_softmax = y_softma.clone().detach().requires_grad_(True)
             
             real_label = torch.zeros(1,10)
             real_label[label[b].item()] = 1.0
@@ -73,6 +75,28 @@ for epoch in range(n_epochs):
 
             y_softmax.grad.zero_()
             output.grad.zero_()
+    if epoch % 1 == 0:
+        l = loss(y_softmax,real_label)
+        print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
+
+#Now I calculate model accuracy:
+with torch.nograd():
+    n_correct = 0
+    n_samples = 0
+    for images, labels in test_loader:
+        for b in range(batch_size):
+            immage_padded_0 = padding(images[b])
+            o = CNN.forward(immage_padded_0)
+            y_softmax = torch.softmax(o)
+
+            # max returns (value ,index)
+            _,predicted = torch.max(y_softmax, 1)
+            predicted += 1
+            n_samples += 1
+            n_correct += (predicted == labels[b]).sum().item()
+
+    acc = 100.0 * n_correct / n_samples
+    print(f'Accuracy of the network on the 10000 test images: {acc} %')
 
             
 

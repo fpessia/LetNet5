@@ -21,12 +21,15 @@ class LetNet5():
 
     def forward(self,x):
         l1 = self.C1.forward(x)
+        
         l2 = self.Act_C1.forward(l1)
         l3 = self.Avg_polling_1.forward(l2)
         l4 = self.C2.forward(l3)
+       
         l5 = self.Act_C2.forward(l4)
         l6 = self.Avg_pooling2.forward(l5)
         l7 = self.C3.forward(l6)
+        
         l8 = self.Act_C3.forward(l7)
         l9 = self.Fully1.forward(l8)
         l10 = self.Act_Fully1.forward(l9)

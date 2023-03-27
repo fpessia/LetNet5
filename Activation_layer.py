@@ -7,8 +7,8 @@ class Activation_layer():
         self.y = torch.randn(dim_x,dim_y,dim_z, requires_grad = True)
     
     def forward(self,x):
-        self.x = x
-        self.x = self.x.requires_grad = True
+        #self.x =torch.tensor(x, requires_grad = True) 
+        self.x = x.clone().detach().requires_grad_(True)
         self.y = torch.tanh(self.x)
         return torch.tanh(x)
 

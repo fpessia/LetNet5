@@ -10,7 +10,7 @@ class Avg_Pooling_layer():
         if mod != 0:
             print("Entered unsiutable pooling size")
         else :
-            self.output_size = self.input_size/ self.pooling_size
+            self.output_size = int(self.input_size/ self.pooling_size)
             
         
     def forward(self,x):

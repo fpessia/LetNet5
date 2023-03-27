@@ -91,13 +91,13 @@ with torch.no_grad():
         for b in range(batch_size):
             immage_padded_0 = padding(images[b])
             o = CNN.forward(immage_padded_0)
-            y_softmax = torch.softmax(o)
+            y_softmax = torch.softmax(o,dim = 0)
 
             # max returns (value ,index)
-            _,predicted = torch.max(y_softmax, 1)
-            predicted += 1
+            predicted = torch.argmax(y_softmax).item()
             n_samples += 1
-            n_correct += (predicted == labels[b]).sum().item()
+            if predicted == labels[b].item():
+                n_correct += 1
 
     acc = 100.0 * n_correct / n_samples
     print(f'Accuracy of the network on the 10000 test images: {acc} %')

@@ -60,6 +60,9 @@ class Conv_layer():
                                 v = l - j
                                 if u >= 0 and v >= 0 and u < self.filter_size and v < self.filter_size:
                                     dx[c][k][l] = dy[f][i][j] *self.w[f][c][u][v]
+                               
+
+                                
                                 
 
 

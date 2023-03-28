@@ -27,8 +27,8 @@ def loss (y_tilde,y):
     return ((y_tilde - y)**2).mean()
     
 
-batch_size = 100
-n_epochs = 10
+batch_size = 10
+n_epochs = 2
 learning_rate = 0.01
 
 # MNIST dataset 
@@ -59,7 +59,7 @@ CNN = LetNet5(learning_rate)
 for epoch in range(n_epochs):
     for i, (immage, label) in enumerate(train_loader):
         for b in range(batch_size):
-            print(b)
+            
             immage_padded_0 = padding(immage[b])
             outpu = CNN.forward(immage_padded_0)
 
@@ -79,9 +79,9 @@ for epoch in range(n_epochs):
 
             #y_softmax.grad.zero_()
             output.grad.zero_()
-    if epoch % 1 == 0:
-        l = loss(y_softmax,real_label)
-        print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
+            if b % 5 == 0:
+                l = loss(y_softmax,real_label)
+                print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
 
 #Now I calculate model accuracy:
 with torch.no_grad():
@@ -98,7 +98,6 @@ with torch.no_grad():
             n_samples += 1
             if predicted == labels[b].item():
                 n_correct += 1
-
     acc = 100.0 * n_correct / n_samples
     print(f'Accuracy of the network on the 10000 test images: {acc} %')
 

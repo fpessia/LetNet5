@@ -1,4 +1,5 @@
 import torch
+from pathos.multiprocessing import ProcessingPool as Pool
 
 class Fully_connected_layer():
     def __init__(self,input_size,output_size,learning_rate):
@@ -8,16 +9,15 @@ class Fully_connected_layer():
         self.w = torch.randn(self.output_size,self.input_size)
         self.b = torch.randn(1,self.output_size)
         self.last_input = torch.zeros(input_size)
+        self.y = torch.zeros(self.output_size)
+        self.map = Pool().map
 
     def forward(self, x):
-        y = torch.zeros(self.output_size)
-        for n in range(self.output_size): #for each neuron
-            for w_i in range(self.input_size):
-                y[n] += self.w[n][w_i] * x[w_i]
-
-            y[n] += self.b[0][n]
+        # I'm multiprocessing on the number of neurons
         self.last_input = x
-        return y
+        self.map(self.neuron_forward, range(self.output_size))
+    
+        return self.y
     
     def backward(self, dy):
 
@@ -47,6 +47,14 @@ class Fully_connected_layer():
                     self.w[n][i] -= self.learning_rate * dw[n][i]
 
         return dx
+    
+
+    def neuron_forward(self, n):
+        for w_i in range(self.input_size):
+            self.y[n] += self.w[n][w_i] * self.last_input[w_i]
+
+        self.y[n] += self.b[0][n]
+
         
         
 

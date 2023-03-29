@@ -4,6 +4,7 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
+from multiprocessing import Pool
 import sys
 
 
@@ -26,80 +27,86 @@ def loss_calculation(y_tilde, y):
 def loss (y_tilde,y):
     return ((y_tilde - y)**2).mean()
     
+if __name__ == "__main__":
+    batch_size = 10
+    n_epochs = 2
+    learning_rate = 0.01
 
-batch_size = 10
-n_epochs = 2
-learning_rate = 0.01
-
-# MNIST dataset 
-train_dataset = torchvision.datasets.MNIST(root='./data', 
-                                           train=True, 
-                                           transform=transforms.ToTensor(),  
-                                           download=True)
-
-
+    # MNIST dataset 
+    train_dataset = torchvision.datasets.MNIST(root='./data', 
+                                                train=True, 
+                                                transform=transforms.ToTensor(),  
+                                                download=True)
 
 
-test_dataset = torchvision.datasets.MNIST(root='./data', 
-                                          train=False, 
-                                          transform=transforms.ToTensor())
-
-# Data loader
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
-                                           batch_size=batch_size, 
-                                           shuffle=True)
-
-test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
-                                          batch_size=batch_size, 
-                                          shuffle=False)
 
 
-CNN = LetNet5(learning_rate)
+    test_dataset = torchvision.datasets.MNIST(root='./data', 
+                                            train=False, 
+                                            transform=transforms.ToTensor())
 
-for epoch in range(n_epochs):
-    for i, (immage, label) in enumerate(train_loader):
-        for b in range(batch_size):
+    # Data loader
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, 
+                                            batch_size=batch_size, 
+                                            shuffle=True)
+
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
+                                            batch_size=batch_size, 
+                                            shuffle=False)
+
+
+    CNN = LetNet5(learning_rate)
+    pool  = Pool()
+
+    for epoch in range(n_epochs):
+        for i, (immage, label) in enumerate(train_loader):
+            #Parallel batch immage padding
+            immage_padded_0 = pool.map(padding, immage)
+            pool.close()
+            pool.join()
+
+            for b in range(batch_size):
             
-            immage_padded_0 = padding(immage[b])
-            outpu = CNN.forward(immage_padded_0)
+            
+                outpu = CNN.forward(immage_padded_0)
 
-            output= outpu.clone().detach().requires_grad_ (True)
-            y_softmax = torch.softmax(output, dim=0)
+                output= outpu.clone().detach().requires_grad_ (True)
+                y_softmax = torch.softmax(output, dim=0)
           
             
-            real_label = torch.zeros(10)
-            real_label[label[b].item()] = 1.0
-            dL_dy = loss_calculation(y_softmax,real_label)
+                real_label = torch.zeros(10)
+                real_label[label[b].item()] = 1.0
+                dL_dy = loss_calculation(y_softmax,real_label)
 
             
-            y_softmax.backward(dL_dy)
+                y_softmax.backward(dL_dy)
 
     
-            CNN.backward(output.grad)
+                CNN.backward(output.grad)
 
-            #y_softmax.grad.zero_()
-            output.grad.zero_()
-            if b % 5 == 0:
-                l = loss(y_softmax,real_label)
-                print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
+                #y_softmax.grad.zero_()
+                output.grad.zero_()
+                if b % 5 == 0:
+                    l = loss(y_softmax,real_label)
+                    print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
 
-#Now I calculate model accuracy:
-with torch.no_grad():
-    n_correct = 0
-    n_samples = 0
-    for images, labels in test_loader:
-        for b in range(batch_size):
-            immage_padded_0 = padding(images[b])
-            o = CNN.forward(immage_padded_0)
-            y_softmax = torch.softmax(o,dim = 0)
+    #Now I calculate model accuracy:
+    with torch.no_grad():
+        n_correct = 0
+        n_samples = 0
+        for images, labels in test_loader:
+            for b in range(batch_size):
+                immage_padded_0 = padding(images[b])
+                o = CNN.forward(immage_padded_0)
+                y_softmax = torch.softmax(o,dim = 0)
 
-            # max returns (value ,index)
-            predicted = torch.argmax(y_softmax).item()
-            n_samples += 1
-            if predicted == labels[b].item():
-                n_correct += 1
-    acc = 100.0 * n_correct / n_samples
-    print(f'Accuracy of the network on the 10000 test images: {acc} %')
+                # max returns (value ,index)
+                predicted = torch.argmax(y_softmax).item()
+                n_samples += 1
+                if predicted == labels[b].item():
+                    n_correct += 1
+        acc = 100.0 * n_correct / n_samples
+        print(f'Accuracy of the network on the 10000 test images: {acc} %')
 
             
 

@@ -10,6 +10,9 @@ https://towardsdatascience.com/backpropagation-in-a-convolutional-layer-24c8d64d
 FULLY CONNCECTED BACK PROP
 https://eli.thegreenplace.net/2018/backpropagation-through-a-fully-connected-layer/
 
+
+
+
 ACHIEVED ACCURACY:
 still training...
 

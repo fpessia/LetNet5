@@ -1,4 +1,5 @@
 import torch
+from pathos.multiprocessing import ProcessingPool as Pool
 
 class Conv_layer():
     def __init__(self,input_size,n_channels,number_of_filters,filter_size, learning_rate):
@@ -11,19 +12,14 @@ class Conv_layer():
         self.b = torch.randn(1,number_of_filters)
         self.output_size = (input_size- filter_size) + 1
         self.last_input = torch.empty(n_channels,input_size,input_size)
+        self.map = Pool().map
+        self.y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)
 
     def forward(self,x):
-        y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)
-        for f in range(self.number_of_filters):
-            for i in range(self.output_size):
-                    for j in range(self.output_size):
-                        for c in range(self.n_channels):
-                            for k in range(self.filter_size):
-                                for l in range(self.filter_size):
-                                    y[f][i][j] += self.w[f][c][k][l] * x[c][i+k][j+l]
-                        y[f][i][j] += self.b[0][f]
+        # I'm going to use multiprocess in order to calculate the convolution faster
         self.last_input = x
-        return y
+        self.map(self.figure_forward, range(self.number_of_filters))    
+        return self.y
     
     def backward(self,dy):
         # As a fisrt step I calculate db, dw, dx
@@ -81,4 +77,13 @@ class Conv_layer():
     
         
         return dx
+
+    def figure_forward(self,f):
+        for i in range(self.output_size):
+                    for j in range(self.output_size):
+                        for c in range(self.n_channels):
+                            for k in range(self.filter_size):
+                                for l in range(self.filter_size):
+                                    self.y[f][i][j] += self.w[f][c][k][l] * self.last_input[c][i+k][j+l]
+                        self.y[f][i][j] += self.b[0][f]
 

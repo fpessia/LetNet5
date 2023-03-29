@@ -66,8 +66,6 @@ if __name__ == "__main__":
             pool.join()
 
             for b in range(batch_size):
-            
-            
                 outpu = CNN.forward(immage_padded_0)
 
                 output= outpu.clone().detach().requires_grad_ (True)
@@ -88,7 +86,7 @@ if __name__ == "__main__":
                 output.grad.zero_()
                 if b % 5 == 0:
                     l = loss(y_softmax,real_label)
-                    print (f'Epoch [{epoch+1}/{n_epochs}],  Loss: {l.item():.4f}')
+                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/600,  Loss: {l.item():.4f}')
 
     #Now I calculate model accuracy:
     with torch.no_grad():

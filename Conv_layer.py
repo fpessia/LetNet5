@@ -14,7 +14,7 @@ class Conv_layer():
         self.last_input = torch.empty(n_channels,input_size,input_size)
         self.map = Pool().map
         self.y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)
-        self.dy = torch.zeros(self.filter_size, self.output_size, self.output_size)
+        self.dy = torch.zeros(self.number_of_filters, self.output_size, self.output_size)
         self.db = torch.zeros(1,self.number_of_filters)
         self.dw = torch.zeros(self.number_of_filters,self.n_channels,self.filter_size,self.filter_size)
         self.dx = torch.zeros(self.n_channels,self.input_size,self.input_size)

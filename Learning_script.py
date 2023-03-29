@@ -66,7 +66,7 @@ if __name__ == "__main__":
             pool.join()
 
             for b in range(batch_size):
-                outpu = CNN.forward(immage_padded_0)
+                outpu = CNN.forward(immage_padded_0[b])
 
                 output= outpu.clone().detach().requires_grad_ (True)
                 y_softmax = torch.softmax(output, dim=0)
@@ -93,9 +93,12 @@ if __name__ == "__main__":
         n_correct = 0
         n_samples = 0
         for images, labels in test_loader:
+            immage_padded_0  = pool.map(padding, images)
+            pool.close()
+            pool.join()
             for b in range(batch_size):
-                immage_padded_0 = padding(images[b])
-                o = CNN.forward(immage_padded_0)
+                
+                o = CNN.forward(immage_padded_0[b])
                 y_softmax = torch.softmax(o,dim = 0)
 
                 # max returns (value ,index)

@@ -22,9 +22,10 @@ class Conv_layer():
 
     def forward(self,x):
         # I'm going to use multiprocess over the number of filters in order to calculate the convolution faster
-        self.last_input = x
-        self.y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)
-        self.map(self.figure_forward, range(self.number_of_filters))    
+        self.last_input = x  
+        figure_list = self.map(self.figure_forward, range(self.number_of_filters))  
+        for f in range(self.number_of_filters):
+            self.y[f] = figure_list[f]  
         return self.y
     
     def backward(self,dy):
@@ -54,13 +55,15 @@ class Conv_layer():
         return self.dx
 
     def figure_forward(self,f):
+        convoluted_figure = torch.zeros(self.output_size, self.output_size)
         for i in range(self.output_size):
                     for j in range(self.output_size):
                         for c in range(self.n_channels):
                             for k in range(self.filter_size):
                                 for l in range(self.filter_size):
-                                    self.y[f][i][j] += self.w[f][c][k][l] * self.last_input[c][i+k][j+l]
-                        self.y[f][i][j] += self.b[0][f]
+                                    convoluted_figure[i][j] += self.w[f][c][k][l] * self.last_input[c][i+k][j+l]
+                        convoluted_figure[f][i][j] += self.b[0][f]
+        return convoluted_figure
 
     def db_backward(self, f):
        for i in range(self.output_size):

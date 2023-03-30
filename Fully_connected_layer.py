@@ -20,8 +20,10 @@ class Fully_connected_layer():
     def forward(self, x):
         # I'm multiprocessing on the number of neurons
         self.last_input = x
-        self.y = torch.zeros(self.output_size)
-        self.map(self.neuron_forward, range(self.output_size))
+        
+        neuron_list = self.map(self.neuron_forward, range(self.output_size))
+        for n in range(self.output_size):
+            self.y[n] = neuron_list[n]
     
         return self.y
     
@@ -52,10 +54,12 @@ class Fully_connected_layer():
     
 
     def neuron_forward(self, n):
+        neuron = 0
         for w_i in range(self.input_size):
-            self.y[n] += self.w[n][w_i] * self.last_input[w_i]
+            neuron += self.w[n][w_i] * self.last_input[w_i]
+        neuron += self.b[0][n]
 
-        self.y[n] += self.b[0][n]
+        return neuron
 
 
 

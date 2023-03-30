@@ -23,7 +23,7 @@ class Avg_Pooling_layer():
         self.last_input = x
         channel_list = self.map(self.channel_forward, range(self.n_channel))
         for c in range(self.n_channel):
-            self.y = channel_list[c]
+            self.y[c] = channel_list[c]
         return self.y
     
     def backward(self,dy):

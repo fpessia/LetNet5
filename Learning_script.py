@@ -56,11 +56,12 @@ if __name__ == "__main__":
 
 
     CNN = LetNet5(learning_rate)
-    pool  = Pool()
+    
 
     for epoch in range(n_epochs):
         for i, (immage, label) in enumerate(train_loader):
             #Parallel batch immage padding
+            pool  = Pool()
             immage_padded_0 = pool.map(padding, immage)
             pool.close()
             pool.join()
@@ -76,15 +77,17 @@ if __name__ == "__main__":
                 real_label[label[b].item()] = 1.0
                 dL_dy = loss_calculation(y_softmax,real_label)
 
-            
+                
                 y_softmax.backward(dL_dy)
 
-    
+                
                 CNN.backward(output.grad)
 
                 #y_softmax.grad.zero_()
                 output.grad.zero_()
                 if b % 5 == 0:
+                    print(y_softmax)
+                    print(real_label)
                     l = loss(y_softmax,real_label)
                     print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/600,  Loss: {l.item():.4f}')
 
@@ -93,6 +96,7 @@ if __name__ == "__main__":
         n_correct = 0
         n_samples = 0
         for images, labels in test_loader:
+            pool  = Pool()
             immage_padded_0  = pool.map(padding, images)
             pool.close()
             pool.join()

@@ -20,6 +20,7 @@ class Fully_connected_layer():
     def forward(self, x):
         # I'm multiprocessing on the number of neurons
         self.last_input = x
+        self.y = torch.zeros(self.output_size)
         self.map(self.neuron_forward, range(self.output_size))
     
         return self.y

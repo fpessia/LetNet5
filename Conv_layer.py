@@ -23,6 +23,7 @@ class Conv_layer():
     def forward(self,x):
         # I'm going to use multiprocess over the number of filters in order to calculate the convolution faster
         self.last_input = x
+        self.y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)
         self.map(self.figure_forward, range(self.number_of_filters))    
         return self.y
     

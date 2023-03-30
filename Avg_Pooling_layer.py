@@ -21,6 +21,7 @@ class Avg_Pooling_layer():
     def forward(self,x):
         # I'm going to use multithreading on the different channels
         self.last_input = x
+        self.y = torch.zeros(self.n_channel,self.output_size,self.output_size)
         self.map(self.channel_forward, range(self.n_channel))
         return self.y
     

@@ -31,24 +31,31 @@ class Fully_connected_layer():
 
         with torch.no_grad(): #dy is coming from softmax in outmost layer might cause gradient over calculation
             self.dy = dy
-            #clear last gradient
-            self.dw = torch.zeros(self.output_size,self.input_size)
-            self.db = torch.zeros(1,self.output_size)
-            self.dx = torch.zeros(self.input_size)
+           
             #I calculate first dw using multiprocess
-            self.map(self.dw_backward, range(self.output_size))
+            w_grad_list = self.map(self.dw_backward, range(self.output_size))
+
+            for n in range(self.output_size):
+                self.dw[n] = w_grad_list[n]
     
             #then db
             for n in range(self.output_size):
                 self.db[0][n] = dy[n]
 
             #and to conclude dx multiprocessing over input size
-            self.map(self.dx_backward, range(self.input_size))
+            input_grad_list = self.map(self.dx_backward, range(self.input_size))
+
+            for i in range(self.input_size):
+                self.dx[i] = input_grad_list[i]
             
                 
         
             #Now I update weigth and biases multiprocessing over neurons
-            self.map(self.updating_weigths_bias, range(self.output_size))
+            updated_w_list = self.map(self.updating_weigths, range(self.output_size))
+            
+            for n in range(self.output_size):
+                self.w[n] = updated_w_list[n]
+                self.b[0][n] -= self.learning_rate * self.db[0][n]
 
         return self.dx
     
@@ -64,17 +71,22 @@ class Fully_connected_layer():
 
 
     def dw_backward(self,n):
-         for i in range(self.input_size):
-            self.dw[n][i] = self.dy[n] * self.last_input[i]
-    def dx_backward(self, i):
-        for n in range(self.output_size):
-            self.dx[i] += self.dy[n] * self.w[n][i]
-
-    def updating_weigths_bias(self, n):
-        self.b[0][n] -= self.learning_rate * self.db[0][n]
+        w_grad = torch.zeros(self.input_size)
         for i in range(self.input_size):
-            self.w[n][i] -= self.learning_rate * self.dw[n][i]
+            w_grad[i] = self.dy[n] * self.last_input[i]
+        return w_grad
+    
+    def dx_backward(self, i):
+        input_grad = 0
+        for n in range(self.output_size):
+            input_grad += self.dy[n] * self.w[n][i]
+        return input_grad
 
+    def updating_weigths(self, n):
+        updated_w = self.w[n]
+        for i in range(self.input_size):
+            updated_w[i] -= self.learning_rate * self.dw[n][i]
+        return updated_w
 
         
 

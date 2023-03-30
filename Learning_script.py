@@ -86,8 +86,6 @@ if __name__ == "__main__":
                 #y_softmax.grad.zero_()
                 output.grad.zero_()
                 if b % 5 == 0:
-                    print(y_softmax)
-                    print(real_label)
                     l = loss(y_softmax,real_label)
                     print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/600,  Loss: {l.item():.4f}')
 

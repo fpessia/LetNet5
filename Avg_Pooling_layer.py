@@ -27,12 +27,13 @@ class Avg_Pooling_layer():
         return self.y
     
     def backward(self,dy):
-        #clear last gradient
-        self.dx = torch.zeros(self.n_channel,self.input_size,self.input_size)
+        
         self.dy = dy
 
         #multiprocessing backward method over channels
-        self.map(self.channel_backward, range(self.n_channel))
+        input_grad_list = self.map(self.channel_backward, range(self.n_channel))
+        for c in range(self.n_channel):
+            self.dx[c] = input_grad_list[c]
         return self.dx
     
     def channel_forward(self,c):
@@ -48,8 +49,10 @@ class Avg_Pooling_layer():
         return pooled_channel
 
     def channel_backward(self,c):
+        input_grad = torch.zeros(self.input_size,self.input_size)
         for k in range(self.output_size):
             for l in range(self.output_size):
                 for i in range(self.pooling_size):
                     for j in range(self.pooling_size):
-                        self.dx[c][k*self.pooling_size + i][l *self.pooling_size + j] = self.dy[c][k][l] / (self.pooling_size * self.pooling_size)
+                        input_grad[k*self.pooling_size + i][l *self.pooling_size + j] = self.dy[c][k][l] / (self.pooling_size * self.pooling_size)
+        return input_grad

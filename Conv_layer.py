@@ -32,25 +32,33 @@ class Conv_layer():
         # As a fisrt step I calculate db, dw, dx
         #then I update w & b
 
-        #clear old gradient & save new dy
-        self.db = torch.zeros(1,self.number_of_filters)
-        self.dw = torch.zeros(self.number_of_filters,self.n_channels,self.filter_size,self.filter_size)
-        self.dx = torch.zeros(self.n_channels,self.input_size,self.input_size)
-
+        self.dy = dy
 
         #caulculate db multiprocessing over number of filters
-        self.map(self.db_backward, range(self.number_of_filters))
+        bias_grad_list = self.map(self.db_backward, range(self.number_of_filters))
+        for f in range(self.number_of_filters):
+            self.db[0,f] = bias_grad_list[f]
         
         
         #Now i proced to find dw still multiprocessing over filters
-        self.map(self.dw_backward, range(self.number_of_filters))
+        w_grad_list = self.map(self.dw_backward, range(self.number_of_filters))
+
+        for f in range(self.number_of_filters):
+            self.dw[f] = w_grad_list[f]
        
-         
+
        #and finally to find dx this time multiprocessing over n_channels
-        self.map(self.dx_backward, range(self.n_channels))
+        input_grad_list = self.map(self.dx_backward, range(self.n_channels))
+
+        for c in range(self.n_channels):
+            self.dx[c] = input_grad_list[c]
         
         #Now I update w & b according to learinig rate multiprocessing over filters
-        self.map(self.updating_weigths_and_bias, range(self.number_of_filters))
+        updated_w_list = self.map(self.updating_weigths_and_bias, range(self.number_of_filters))
+
+        for f in range(self.number_of_filters):
+            self.b[0][f] -= self.learning_rate * self.db[0][f]
+            self.w[f] = updated_w_list[f]
         
         return self.dx
 
@@ -66,21 +74,26 @@ class Conv_layer():
         return convoluted_figure
 
     def db_backward(self, f):
-       for i in range(self.output_size):
+        bias_grad = 0
+        for i in range(self.output_size):
             for j in range(self.output_size):
-                self.db[0,f] += self.dy[f][i][j] 
+                bias_grad += self.dy[f][i][j]
+        return bias_grad 
 
     def dw_backward(self, f):
+        w_grad = torch.zeros(self.n_channels, self.filter_size, self.filter_size)
         for c in range(self.n_channels):
             for k in range(self.filter_size):
                 for l in range(self.filter_size):
                     for i in range(self.output_size):
                         for j in range(self.output_size):
                             #for c_n in range(self.n_channels):
-                            self.dw[f][c][k][l] += self.dy[f][i][j] * self.last_input[c][i+k][j+l]
+                            w_grad[c][k][l] += self.dy[f][i][j] * self.last_input[c][i+k][j+l]
+        return w_grad
 
 
     def dx_backward(self, c):
+        input_grad = torch.zeros(self.input_size, self.input_size)
         for k in range(self.input_size):
             for l in range(self.input_size):
                 for f in range(self.number_of_filters):
@@ -89,11 +102,13 @@ class Conv_layer():
                             u = k - i
                             v = l - j
                             if u >= 0 and v >= 0 and u < self.filter_size and v < self.filter_size:
-                                self.dx[c][k][l] = self.dy[f][i][j] *self.w[f][c][u][v]
+                                input_grad[k][l] = self.dy[f][i][j] *self.w[f][c][u][v]
+        return input_grad
 
     def updating_weigths_and_bias(self, f):
-        self.b[0][f] -= self.learning_rate * self.db[0][f]
+        updated_w = self.w[f]
         for c in range(self.n_channels):
             for i in range(self.filter_size):
                  for j in range(self.filter_size):
-                    self.w[f][c][i][j] -= self.learning_rate * self.dw[f][c][i][j]
+                    updated_w[c][i][j] -= self.learning_rate * self.dw[f][c][i][j]
+        return updated_w

@@ -62,7 +62,7 @@ class Conv_layer():
                             for k in range(self.filter_size):
                                 for l in range(self.filter_size):
                                     convoluted_figure[i][j] += self.w[f][c][k][l] * self.last_input[c][i+k][j+l]
-                        convoluted_figure[f][i][j] += self.b[0][f]
+                        convoluted_figure[i][j] += self.b[0][f]
         return convoluted_figure
 
     def db_backward(self, f):

@@ -87,7 +87,32 @@ class Fully_connected_layer():
         for i in range(self.input_size):
             updated_w[i] -= self.learning_rate * self.dw[n][i]
         return updated_w
+    
+    def W_and_biases_write(self):
+        file = open("C:/Users/fpess/OneDrive/Desktop/Magistrale/TESI/Pytorch/LetNet5/W_and_biases_4k_immages.txt", mode="a")
+        file.write("\n \n")
+        for  n in range(self.output_size):
+            for i in range(self.input_size):
+                file.write(str(self.w[n][i].item())+ "\t")
+        file.write("\n \n")
+        for n in range(self.output_size):
+            file.write(str(self.b[0][n].item()) + "\t")
+        file.close()
 
+    def W_and_biases_read(self, file):
+        line = file.readline()
+        line = file.readline()
+        line = file.readline()
+        float_list = line.split("\t")
+        for n in range(self.output_size):
+            for i in range(self.input_size):
+                self.w[n][i] = float_list[n + i]
+        line = file.readline()
+        line = file.readline()#reading \n
+        line = file.readline()
+        float_list = line.split("\t")
+        for n in range(self.output_size):
+            self.b[0][n] = float_list[n]
         
 
 

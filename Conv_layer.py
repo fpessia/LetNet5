@@ -112,3 +112,39 @@ class Conv_layer():
                  for j in range(self.filter_size):
                     updated_w[c][i][j] -= self.learning_rate * self.dw[f][c][i][j]
         return updated_w
+    
+    def W_and_bias_write(self):
+        file = open("C:/Users/fpess/OneDrive/Desktop/Magistrale/TESI/Pytorch/LetNet5/W_and_biases_4k_immages.txt", mode="a")
+        file.write("\n \n")
+        for f in range(self.number_of_filters):
+            for c in range(self.n_channels):
+                for i in range(self.filter_size):
+                    for j in range(self. filter_size):
+                        file.write(str(self.w[f][c][i][j].item()) + "\t")
+                file.write("\n")
+
+        file.write("\n \n")
+        for f in range(self.number_of_filters):
+            file.write(str(self.b[0][f].item())+ "\t")
+        file.close()
+    
+    def W_and_bias_read(self, file):
+        line = file.readline()
+        line = file.readline() #reading \n
+        for f in range(self.number_of_filters):
+            for c in range(self.n_channels):
+                line = file.readline()
+                float_list = line.split("\t")
+                for i in range(self.filter_size):
+                    for j in range(self.filter_size):
+                        self.w[f][c][i][j] = float_list[i + j]
+        line = file.readline()
+        line = file.readline() #reading \n
+        
+        line = file.readline()
+        float_list = line.split("\t")
+        for f in range(self.number_of_filters):
+            self.b[0][f] = float_list[f]
+            
+   
+

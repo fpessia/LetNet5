@@ -61,6 +61,21 @@ class LetNet5():
         b9 = self.Act_C1.backward(b8)
         b10 = self.C1.backward(b9)
 
+    def printing(self):
+        self.C1.W_and_bias_write()
+        self.C2.W_and_bias_write()
+        self.C3.W_and_bias_write()
+        self.Fully1.W_and_biases_write()
+        self.Fully2.W_and_biases_write()
+    
+    def reading(self, file):
+        self.C1.W_and_bias_read(file)
+        self.C2.W_and_bias_read(file)
+        self.C3.W_and_bias_read(file)
+        self.Fully1.W_and_biases_read(file)
+        self.Fully2.W_and_biases_read(file)
+        
+
 
     
     

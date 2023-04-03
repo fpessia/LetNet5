@@ -126,6 +126,7 @@ class Conv_layer():
         file.write("\n \n")
         for f in range(self.number_of_filters):
             file.write(str(self.b[0][f].item())+ "\t")
+        file.write("\n")
         file.close()
     
     def W_and_bias_read(self, file):
@@ -137,14 +138,14 @@ class Conv_layer():
                 float_list = line.split("\t")
                 for i in range(self.filter_size):
                     for j in range(self.filter_size):
-                        self.w[f][c][i][j] = float_list[i + j]
+                        self.w[f][c][i][j] = float(float_list[i  * self.filter_size + j])
         line = file.readline()
         line = file.readline() #reading \n
         
         line = file.readline()
         float_list = line.split("\t")
         for f in range(self.number_of_filters):
-            self.b[0][f] = float_list[f]
+            self.b[0][f] = float(float_list[f])
             
    
 

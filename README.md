@@ -15,6 +15,6 @@ https://eli.thegreenplace.net/2018/backpropagation-through-a-fully-connected-lay
 
 ACHIEVED ACCURACY:
 -accuracy after 4000 training figures with 1000 test figures is 9.7%
-
+-accuracy after 6500 training figures with 1000 test figures is 10.5 %
 
 

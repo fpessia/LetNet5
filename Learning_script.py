@@ -29,7 +29,7 @@ def loss (y_tilde,y):
     
 if __name__ == "__main__":
     batch_size = 10
-    n_epochs = 1
+    n_epochs = 2
     learning_rate = 0.02
 
     already_tranied = True
@@ -93,11 +93,12 @@ if __name__ == "__main__":
                 output.grad.zero_()
                 if b % 5 == 0:
                     l = loss(y_softmax,real_label)
-                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/400,  Loss: {l.item():.4f}')
-            if i == 400:
-                CNN.printing()
+                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/125,  Loss: {l.item():.4f}')
+            if i == 125:
                 break;
 
+
+    CNN.printing()
     #Now I calculate model accuracy:
     with torch.no_grad():
         n_correct = 0

@@ -1,4 +1,5 @@
 import torch
+from math import sqrt
 from pathos.multiprocessing import ProcessingPool as Pool
 
 class Conv_layer():
@@ -8,9 +9,14 @@ class Conv_layer():
         self.number_of_filters = number_of_filters
         self.filter_size = filter_size
         self.learning_rate = learning_rate
-        self.w = torch.randn(number_of_filters,n_channels,filter_size,filter_size)
-        self.b = torch.randn(1,number_of_filters)
         self.output_size = (input_size- filter_size) + 1
+
+        self.len_prev_layer = self.input_size * self.input_size * self.n_channels
+        self.len_layer_out = self.number_of_filters * self.output_size * self.output_size
+
+        self.w = torch.randn(number_of_filters,n_channels,filter_size,filter_size) * sqrt(2/(self.len_prev_layer + self.len_layer_out))
+        self.b = torch.zeros(1,number_of_filters)
+        
         self.last_input = torch.empty(n_channels,input_size,input_size)
         self.map = Pool().map
         self.y = torch.zeros(self.number_of_filters,self.output_size,self.output_size)

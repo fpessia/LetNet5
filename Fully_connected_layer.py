@@ -1,18 +1,19 @@
 import torch
 from pathos.multiprocessing import ProcessingPool as Pool
+from math import sqrt
 
 class Fully_connected_layer():
     def __init__(self,input_size,output_size,learning_rate):
         self.input_size = input_size
         self.output_size = output_size
         self.learning_rate = learning_rate
-        self.w = torch.randn(self.output_size,self.input_size)
-        self.b = torch.randn(1,self.output_size)
+        self.w = torch.randn(self.output_size,self.input_size)* sqrt(2/(self.input_size + self.output_size))
+        self.b = torch.zeros(1,self.output_size)
         self.last_input = torch.zeros(input_size)
         self.y = torch.zeros(self.output_size)
         self.map = Pool().map
-        self.dw = torch.zeros(self.output_size,self.input_size)
-        self.db = torch.zeros(1,self.output_size)
+        self.dw = torch.zeros(self.output_size,self.input_size) 
+        self.db = torch.zeros(1,self.output_size) 
         self.dx = torch.zeros(self.input_size)
         self.dy = torch.zeros(self.output_size)
         
@@ -57,6 +58,7 @@ class Fully_connected_layer():
                 self.w[n] = updated_w_list[n]
                 self.b[0][n] -= self.learning_rate * self.db[0][n]
 
+        
         return self.dx
     
 

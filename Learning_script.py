@@ -29,8 +29,8 @@ def loss (y_tilde,y):
     
 if __name__ == "__main__":
     batch_size = 10
-    n_epochs = 2
-    learning_rate = 0.02
+    n_epochs = 1
+    learning_rate = 0.01
 
     already_tranied = True
 
@@ -62,6 +62,8 @@ if __name__ == "__main__":
         file = open("C:/Users/fpess/OneDrive/Desktop/Magistrale/TESI/Pytorch/LetNet5/W_and_biases_4k_immages.txt", mode="r")
         CNN.reading(file)
         file.close()
+    if already_tranied == False:
+        CNN.printing()
     
 
     for epoch in range(n_epochs):
@@ -88,13 +90,14 @@ if __name__ == "__main__":
 
                 
                 CNN.backward(output.grad)
-
-                #y_softmax.grad.zero_()
+                CNN.grad_zero()
                 output.grad.zero_()
+
+                
                 if b % 5 == 0:
                     l = loss(y_softmax,real_label)
-                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/125,  Loss: {l.item():.4f}')
-            if i == 125:
+                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/200,  Loss: {l.item():.4f}')
+            if i == 200:
                 break;
 
 
@@ -120,10 +123,10 @@ if __name__ == "__main__":
                 if predicted == labels[b].item():
                     n_correct += 1
             n += 1
-            if  n ==  100:
+            if  n ==  50:
                 break;
         acc = 100.0 * n_correct / n_samples
-        print(f'Accuracy of the network on the 1000 test images after 4000 of training: {acc} %')
+        print(f'Accuracy of the network on the 500 test images after 3000 of training: {acc} %')
 
             
 

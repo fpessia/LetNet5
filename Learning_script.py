@@ -97,7 +97,7 @@ if __name__ == "__main__":
                 if b % 5 == 0:
                     l = loss(y_softmax,real_label)
                     print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/200,  Loss: {l.item():.4f}')
-            if i == 200:
+            if i == 325:
                 break;
 
 
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                 if predicted == labels[b].item():
                     n_correct += 1
             n += 1
-            if  n ==  50:
+            if  n ==  60:
                 break;
         acc = 100.0 * n_correct / n_samples
         print(f'Accuracy of the network on the 500 test images after 3000 of training: {acc} %')

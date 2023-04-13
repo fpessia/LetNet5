@@ -17,8 +17,13 @@ https://stats.stackexchange.com/questions/373136/softmax-weights-initialization
 
 
 ACHIEVED ACCURACY:
--accuracy after 2000 training figures with 500 test figures is 16.6%
--accuracy after 5250 training figures with 600 test figures is ...
+-accuracy after 2000 training figures with 500 test figures is 16.6% (unshaffled)
+-accuracy after 5000 training figures with 600 test figures is 15.66%
+-accuracy after 8000 training images with 600 test figures is 13.33%
+
+
+
+
 
 
 

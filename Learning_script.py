@@ -5,6 +5,7 @@ import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
+import time
 import sys
 
 
@@ -28,11 +29,18 @@ def loss (y_tilde,y):
     return ((y_tilde - y)**2).mean()
     
 if __name__ == "__main__":
+
+   # print("Sleeping")
+   # time.sleep(3600)
+   # print("Done sleeping")
+
     batch_size = 10
     n_epochs = 1
-    learning_rate = 0.01
+    learning_rate = 0.001
 
     already_tranied = True
+    training = True
+    Evalutating = True
 
     # MNIST dataset 
     train_dataset = torchvision.datasets.MNIST(root='./data', 
@@ -54,7 +62,7 @@ if __name__ == "__main__":
 
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, 
                                             batch_size=batch_size, 
-                                            shuffle=False)
+                                            shuffle=True)
 
 
     CNN = LetNet5(learning_rate)
@@ -65,68 +73,69 @@ if __name__ == "__main__":
     if already_tranied == False:
         CNN.printing()
     
+    if training : 
+        for epoch in range(n_epochs):
+            for i, (immage, label) in enumerate(train_loader):
+                #Parallel batch immage padding 
+                pool  = Pool()
+                immage_padded_0 = pool.map(padding, immage)
+                pool.close()
+                pool.join()
 
-    for epoch in range(n_epochs):
-        for i, (immage, label) in enumerate(train_loader):
-            #Parallel batch immage padding
-            pool  = Pool()
-            immage_padded_0 = pool.map(padding, immage)
-            pool.close()
-            pool.join()
+                for b in range(batch_size):
+                    outpu = CNN.forward(immage_padded_0[b])
 
-            for b in range(batch_size):
-                outpu = CNN.forward(immage_padded_0[b])
-
-                output= outpu.clone().detach().requires_grad_ (True)
-                y_softmax = torch.softmax(output, dim=0)
+                    output= outpu.clone().detach().requires_grad_ (True)
+                    y_softmax = torch.softmax(output, dim=0)
           
             
-                real_label = torch.zeros(10)
-                real_label[label[b].item()] = 1.0
-                dL_dy = loss_calculation(y_softmax,real_label)
+                    real_label = torch.zeros(10)
+                    real_label[label[b].item()] = 1.0
+                    dL_dy = loss_calculation(y_softmax,real_label)
 
                 
-                y_softmax.backward(dL_dy)
+                    y_softmax.backward(dL_dy)
 
                 
-                CNN.backward(output.grad)
-                CNN.grad_zero()
-                output.grad.zero_()
+                    CNN.backward(output.grad)
+                    CNN.grad_zero()
+                    output.grad.zero_()
 
                 
-                if b % 5 == 0:
-                    l = loss(y_softmax,real_label)
-                    print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/200,  Loss: {l.item():.4f}')
-            if i == 325:
-                break;
+                    if b % 5 == 0:
+                        l = loss(y_softmax,real_label)
+                        print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/300,  Loss: {l.item():.4f}')
+                if i == 300:
+                    break;
 
 
-    CNN.printing()
-    #Now I calculate model accuracy:
-    with torch.no_grad():
-        n_correct = 0
-        n_samples = 0
-        n = 0
-        for images, labels in test_loader:
-            pool  = Pool()
-            immage_padded_0  = pool.map(padding, images)
-            pool.close()
-            pool.join()
-            for b in range(batch_size):
+        CNN.printing()
+    if Evalutating:
+        #Now I calculate model accuracy:
+        with torch.no_grad():
+            n_correct = 0
+            n_samples = 0
+            n = 0
+            for images, labels in test_loader:
+                pool  = Pool()
+                immage_padded_0  = pool.map(padding, images)
+                pool.close()
+                pool.join()
+                for b in range(batch_size):
                 
-                o = CNN.forward(immage_padded_0[b])
-                y_softmax = torch.softmax(o,dim = 0)
+                    o = CNN.forward(immage_padded_0[b])
+                    y_softmax = torch.softmax(o,dim = 0)
 
-                # max returns (value ,index)
-                predicted = torch.argmax(y_softmax).item()
-                n_samples += 1
-                if predicted == labels[b].item():
-                    n_correct += 1
-            n += 1
-            if  n ==  60:
-                break;
-        acc = 100.0 * n_correct / n_samples
-        print(f'Accuracy of the network on the 500 test images after 3000 of training: {acc} %')
+                    # max returns (value ,index)
+                    predicted = torch.argmax(y_softmax).item()
+                    n_samples += 1
+                    if predicted == labels[b].item():
+                        n_correct += 1
+                n += 1
+                if  n ==  60:
+                    break;
+            acc = 100.0 * n_correct / n_samples
+            print(f'Accuracy of the network: {acc} %')
 
             
 

@@ -39,7 +39,7 @@ if __name__ == "__main__":
     learning_rate = 0.001
 
     already_tranied = True
-    training = True
+    training = False
     Evalutating = True
 
     # MNIST dataset 
@@ -104,13 +104,14 @@ if __name__ == "__main__":
                 
                     if b % 5 == 0:
                         l = loss(y_softmax,real_label)
-                        print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/300,  Loss: {l.item():.4f}')
-                if i == 300:
+                        print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/350,  Loss: {l.item():.4f}')
+                if i == 350:
                     break;
 
 
         CNN.printing()
     if Evalutating:
+        print("Evaluating")
         #Now I calculate model accuracy:
         with torch.no_grad():
             n_correct = 0
@@ -121,6 +122,7 @@ if __name__ == "__main__":
                 immage_padded_0  = pool.map(padding, images)
                 pool.close()
                 pool.join()
+               
                 for b in range(batch_size):
                 
                     o = CNN.forward(immage_padded_0[b])

@@ -23,6 +23,9 @@ ACHIEVED ACCURACY:
 -accuracy after 5000 training figures with 600 test figures is 15.66%
 
 -accuracy after 8000 training images with 600 test figures is 13.33%/15.33%
-trained 8800
 
--accuracy after 12300 training immages with 600 test images is : 17.5 % /
+
+-accuracy after 12300 training immages with 600 test images is : 17.5 % / 14.8%
+
+
+-accuracy after 14300 training immages with 600 test innages is :   15.8%

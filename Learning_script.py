@@ -39,7 +39,7 @@ if __name__ == "__main__":
     learning_rate = 0.001
 
     already_tranied = True
-    training = False
+    training = True
     Evalutating = True
 
     # MNIST dataset 
@@ -104,8 +104,8 @@ if __name__ == "__main__":
                 
                     if b % 5 == 0:
                         l = loss(y_softmax,real_label)
-                        print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/350,  Loss: {l.item():.4f}')
-                if i == 350:
+                        print (f'Epoch [{epoch+1}/{n_epochs}], iteration  {i}/200,  Loss: {l.item():.4f}')
+                if i == 200:
                     break;
 
 
